@@ -1,4 +1,3 @@
-# TODO: Change base OS to Ubuntu because CentOS image size is bigger than Ubuntu
 FROM ubuntu:16.04 as base
 ENV HOME=/root
 ENV LLVM_VERSION=6.0.1
@@ -8,7 +7,10 @@ ENV CLANG_FORMAT=$LLVM_PATH/bin/clang-format
 
 FROM base as build-clang
 WORKDIR $HOME
-RUN wget http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz -O $LLVM_PATH.tar.xz \
+RUN apt update -y \
+ && apt install -y axel xz-utils \
+ && axel -a -n 10 -o $LLVM_PATH.tar.xz \
+    http://llvm.org/releases/$LLVM_VERSION/clang+llvm-$LLVM_VERSION-x86_64-linux-gnu-ubuntu-14.04.tar.xz \
  && mkdir $LLVM_PATH \
  && tar xf $LLVM_PATH.tar.xz -C $LLVM_PATH --strip-components=1
 
